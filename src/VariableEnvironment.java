@@ -27,15 +27,16 @@ public class VariableEnvironment
 	//take in a name and it should retrieve the value associated
 	//with that variable name.  For now, you can assume that
 	//any name you look for, will be found.
-	public int getValue(String name)
+	public int getValue(String name) throws Exception
 	{
 		for(NameValuePair nvp: this.theVariables)
 		{
-			if (nvp.getName().equals(name))
+			if(nvp.getName().equals(name))
 			{
 				return nvp.getValue();
 			}
 		}
-		return -1;
+		//return -1;
+		throw new Exception("Variable Not Found");
 	}
 }
