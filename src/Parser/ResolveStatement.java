@@ -1,3 +1,4 @@
+package Parser;
 
 public class ResolveStatement extends Statement {
 	public String name;

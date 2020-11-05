@@ -1,12 +1,18 @@
+package Parser;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Parser 
 {
-	static ArrayList<Statement> theListOfStatements = new ArrayList<Statement>();
+	private static ArrayList<Statement> theListOfStatements = new ArrayList<Statement>();
 	
-	static void display()
+	public static ArrayList<Statement> getParsedStatements()
+	{
+		return theListOfStatements;
+	}
+	
+	public static void display()
 	{
 		for(Statement s : theListOfStatements)
 		{
@@ -28,7 +34,7 @@ public class Parser
 		return rs;
 	}
 	
-	static void parse(String filename)
+	public static void parse(String filename)
 	{
 		try
 		{
@@ -63,8 +69,6 @@ public class Parser
 		}
 		else if(theParts[0].equals("resolve"))	//resolve a;
 		{
-			//write the necessary code to parse the resolve statement
-			//into a ResolveStatement object
 			theListOfStatements.add(Parser.parseResolve(theParts[1]));
 		}
 		
