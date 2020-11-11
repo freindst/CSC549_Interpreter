@@ -1,0 +1,4 @@
+remember int a = 5;
+remember int b = 7;
+resolve a;
+resolve b;

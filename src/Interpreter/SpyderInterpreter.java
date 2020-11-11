@@ -42,6 +42,14 @@ public class SpyderInterpreter
 	
 	private static void interpretResolveStatement(ResolveStatement rs)
 	{
-		SpyderInterpreter.theOutput.add("<HIDDEN> Variable " + rs.getName() + " is to be resoved.");
+		try
+		{
+			int result = SpyderInterpreter.theEnv.getValue(rs.getName());
+			SpyderInterpreter.theOutput.add("<HIDDEN> Variable " + rs.getName() + " is resoved as " + result + ".");
+		}
+		catch(Exception e)
+		{
+			System.err.println("Variable " + rs.getName() + " NOT FOUND!");
+		}
 	}
 }

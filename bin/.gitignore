@@ -1,8 +1,2 @@
-/Driver.class
-/NameValuePair.class
-/Parser.class
-/RememberStatement.class
-/Statement.class
-/VariableEnvironment.class
-/input.spyder
-/ResolveStatement.class
+/Interpreter/
+/Parser/
