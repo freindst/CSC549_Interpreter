@@ -1,4 +1,6 @@
 remember int a = 5;
 remember int b = 7;
-resolve a;
-resolve b;
+remember int c = b;
+remember int d = do-math a + b;
+remember int d = do-math c + 4;
+remember int e = do-math 5 + 7;

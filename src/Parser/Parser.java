@@ -22,16 +22,21 @@ public class Parser
 	
 	static RememberStatement parseRemember(String type, String name, String value)
 	{
-		//parse this string into language objects
-		//turn remember syntax into a RememberStatement
-		RememberStatement rs = new RememberStatement(type, name, value);
+		Expression re = Parser.parseExpression(value);
+		RememberStatement rs = new RememberStatement(type, name, re);
 		return rs;
 	}
 	
-	static ResolveStatement parseResolve(String name)
+	static ResolveExpression parseResolve(String name)
 	{
-		ResolveStatement rs = new ResolveStatement(name);
+		ResolveExpression rs = new ResolveExpression(name);
 		return rs;
+	}
+	
+	static DoMathExpression parseDoMath(String name)
+	{
+		DoMathExpression e = new DoMathExpression(name);
+		return e;
 	}
 	
 	public static void parse(String filename)
@@ -55,22 +60,38 @@ public class Parser
 		}
 		catch(Exception e)
 		{
+			System.err.println(e.getStackTrace());
 			System.err.println("File Not Found!");
 		}
 	}
 	
 	static void parseStatement(String s)
 	{
+		System.out.println(s);
 		String[] theParts = s.split("\\s+");
 		if(theParts[0].equals("remember"))	// "remember int a = 5"
 		{
+			String str = "";
+			for(int i = 4; i < theParts.length; i++ )
+			{
+				str = str + " " + theParts[i];
+			}
+			str = str.trim();
 			theListOfStatements.add(Parser.parseRemember(theParts[1], 
-					theParts[2], theParts[4]));
-		}
-		else if(theParts[0].equals("resolve"))	//resolve a;
-		{
-			theListOfStatements.add(Parser.parseResolve(theParts[1]));
+					theParts[2], str));
 		}
 		
+	}
+	
+	static Expression parseExpression(String e)
+	{
+		if (e.startsWith(DoMathExpression.identifier))
+		{
+			return Parser.parseDoMath(e);
+		}
+		else
+		{
+			return Parser.parseResolve(e);
+		}
 	}
 }
