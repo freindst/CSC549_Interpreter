@@ -48,7 +48,7 @@ public class Parser
 			String fileContents = "";
 			while(input.hasNext())
 			{
-				fileContents += input.nextLine();
+				fileContents += input.nextLine().trim();
 			}
 			
 			//System.out.println(fileContents);

@@ -13,7 +13,7 @@ public class DoMathExpression extends Expression
 	
 	public static String identifier = "do-math";
 	
-	public static String operatorSymbol = "+-/*%";
+	public static String operatorSymbol = "+-*/%";
 	
 	public DoMathExpression(String name)
 	{
@@ -27,7 +27,7 @@ public class DoMathExpression extends Expression
 	
 	public String toString()
 	{
-		return super.toString() + "\t" + this.name;
+		return super.toString() + "\r\t" + this.name;
 	}
 	
 	public String getName()
@@ -42,7 +42,7 @@ public class DoMathExpression extends Expression
 	
 	public static int math(int a, int b, String op)
 	{
-		int index = op.indexOf(operatorSymbol);
+		int index = operatorSymbol.indexOf(op);
 		switch(index)
 		{
 		case 0:
@@ -50,13 +50,13 @@ public class DoMathExpression extends Expression
 		case 1:
 			return a - b;
 		case 2:
+			return a * b;
+		case 3:
 			if (b == 0)
 			{
 				throw new ArithmeticException();
 			}
 			return a / b;
-		case 3:
-			return a * b;
 		case 4:
 			if (b == 0)
 			{
