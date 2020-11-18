@@ -1,7 +1,6 @@
 remember int a = 5;
 remember int b = 7;
-remember int c = b;
-remember int d = do-math a + b;
-remember int e = do-math c + 4;
-remember int f = do-math 5 + 7;
-remember int g = do-math f - a;
+remember int c = do-math a + b; 
+remember int d = do-math 4 - 2;
+remember int e = do-math 10 % a;
+remember int f = do-math do-math a * do-math b - d + do-math c / d

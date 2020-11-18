@@ -34,7 +34,11 @@ public class SpyderInterpreter
 	{
 		if(e instanceof ResolveExpression)
 		{
-			return SpyderInterpreter.interpretResolveExpressiont((ResolveExpression)e);
+			return SpyderInterpreter.interpretResolveExpression((ResolveExpression)e);
+		}
+		else if(e instanceof LiteralExpression)
+		{
+			return SpyderInterpreter.interpretLiteralExpression((LiteralExpression) e);
 		}
 		else if (e instanceof DoMathExpression)
 		{
@@ -51,16 +55,28 @@ public class SpyderInterpreter
 		SpyderInterpreter.theOutput.add("<HIDDEN> Added " + rs.getName() + " = " + rs.getValue() + " to the variable environment.");
 	}
 	
-	private static int interpretDoMathExpression(DoMathExpression me)
+	private static int interpretDoMathExpression(DoMathExpression dme)
 	{
-		int p1 = SpyderInterpreter.interpretResolveExpressiont((ResolveExpression)me.a1);
-		int p2 = SpyderInterpreter.interpretResolveExpressiont((ResolveExpression)me.a2);
-		return DoMathExpression.math(p1, p2, me.op);
+		Expression left = dme.getLeft();
+		int leftValue = SpyderInterpreter.getExpressionValue(left);
+		Expression right = dme.getRight();
+		int rightValue = SpyderInterpreter.getExpressionValue(right);
+		String math_op = dme.getOp();
+		return DoMathExpression.math(leftValue, rightValue, math_op);
 	}
 	
-	private static int interpretResolveExpressiont(ResolveExpression rs)
+	private static int interpretResolveExpression(ResolveExpression rs)
 	{
 		return SpyderInterpreter.interpretResolveValue(rs.getName());
+	}
+	
+	private static int interpretLiteralExpression(LiteralExpression le)
+	{
+		if(le instanceof Int_LiteralExpression)
+		{
+			return ((Int_LiteralExpression) le).getValue();
+		}
+		throw new RuntimeException("Not a valid literal type...");
 	}
 	
 	private static int interpretResolveValue(String name)

@@ -3,41 +3,37 @@ package Parser;
 public class DoMathExpression extends Expression 
 {
 
-	public String name;
-	
-	public Expression a1;
-	
-	public Expression a2;
-	
-	public String op;
-	
 	public static String identifier = "do-math";
 	
 	public static String operatorSymbol = "+-*/%";
+	private Expression left;
+	private Expression right;
+	private String op;
 	
-	public DoMathExpression(String name)
+	public DoMathExpression(Expression left, String op, Expression right)
 	{
 		super("Do-Math Expression");
-		this.name = name;
-		String[] parts = name.split("\\s+");
-		a1 = new ResolveExpression(parts[1]);
-		op = parts[2];
-		a2 = new ResolveExpression(parts[3]);
+		this.left = left;
+		this.right = right;
+		this.op = op;
 	}
 	
 	public String toString()
 	{
-		return super.toString() + "\r\t" + this.name;
+		return super.toString() + "\n\t" + this.left.toString() + " "
+				+ this.op + " " + this.right.toString();
 	}
-	
-	public String getName()
-	{
-		return this.name;
+
+	public Expression getLeft() {
+		return left;
 	}
-	
-	public void setName(String name)
-	{
-		this.name = name;
+
+	public Expression getRight() {
+		return right;
+	}
+
+	public String getOp() {
+		return op;
 	}
 	
 	public static int math(int a, int b, String op)
