@@ -20,11 +20,29 @@ public class Parser
 		}
 	}
 	
-	static RememberStatement parseRemember(String type, String name, String value)
+	static RememberStatement parseRemember(String s)
 	{
-		Expression re = Parser.parseExpression(value);
-		RememberStatement rs = new RememberStatement(type, name, re);
+		String[] parts = s.split("\\s+");
+		int posOfEqualSign = s.indexOf('=');
+		String str = s.substring(posOfEqualSign+1).trim();
+		Expression re = Parser.parseExpression(str);
+		RememberStatement rs = new RememberStatement(parts[1], parts[2], re);
 		return rs;
+	}
+	
+	static QuestionStatement parseQuestion(String testExpression, String trueStatement, String falseStatement)
+	{
+		Statement a1 = null;
+		if (trueStatement.startsWith(RememberStatement.identifier))
+		{
+			a1 = parseRemember(trueStatement);
+		}
+		Statement a2 = null;
+		if (falseStatement.startsWith(RememberStatement.identifier))
+		{
+			a2 = parseRemember(falseStatement);
+		}
+		return new QuestionStatement(Parser.parseTest(testExpression), a1, a2);
 	}
 	
 	static LiteralExpression parseLiteral(String value)
@@ -43,8 +61,6 @@ public class Parser
 	{
 		//do-math do-math a + 7 + 4 - doesn't work for this YET!
 		//make the above work for HW
-		String operator_sign = "+-*/%";
-		String doMath_indicator = "do-math";
 		String[] theParts = expression.split("\\s+");
 		String leftStr = "";
 		String rightStr = "";
@@ -55,11 +71,11 @@ public class Parser
 		{
 			if (!doneLeft)
 			{
-				if (theParts[i].equals(doMath_indicator))
+				if (theParts[i].equals(DoMathExpression.identifier))
 				{
 					indicatorCount++;
 				}
-				else if (operator_sign.indexOf(theParts[i]) >= 0)
+				else if (DoMathExpression.operatorSymbol.indexOf(theParts[i]) >= 0)
 				{
 					indicatorCount--;
 				}
@@ -77,19 +93,52 @@ public class Parser
 			{
 				rightStr = rightStr + " " + theParts[i];
 			}
-		}
-		
-		//do-math a + 7 - will work for this
-		// (resolve expression a) + (int_lit expression 7)
-		//right now we are assuming only a single level of do-math
-		
-		Expression left = Parser.parseExpression(leftStr.trim());
-		
-		Expression right = Parser.parseExpression(rightStr.trim());
-		
+		}		
+		Expression left = Parser.parseExpression(leftStr.trim());		
+		Expression right = Parser.parseExpression(rightStr.trim());		
 		//create and return an instance of DoMathExpression
 		DoMathExpression theResult = new DoMathExpression(left, math_op, right);
 		return theResult;
+	}
+	
+	static TestExpression parseTest(String expression)
+	{
+		String[] parts = expression.split("\\s+");
+		String[] operators = TestExpression.booleanKeywords.split(" ");		
+		String leftStr = "";
+		String rightStr = "";
+		String op = "";
+		boolean doneLeft = false;
+		for(int i = 1; i < parts.length; i++)
+		{
+			if (doneLeft)
+			{
+				rightStr += " " + parts[i];
+			}
+			else
+			{
+				boolean match = false;
+				for(int j = 0; j < operators.length; j++)
+				{
+					if (operators[j].matches(parts[i]))
+					{
+						match = true;
+					}
+				}
+				if (match)
+				{
+					op = parts[i];
+					doneLeft = true;
+				}
+				else
+				{
+					leftStr += " " + parts[i];
+				}
+			}
+		}
+		Expression left = Parser.parseExpression(leftStr.trim());		
+		Expression right = Parser.parseExpression(rightStr.trim());		
+		return new TestExpression(left, op, right);
 	}
 	
 	public static void parse(String filename)
@@ -122,14 +171,44 @@ public class Parser
 	{
 		System.out.println(s);
 		String[] theParts = s.split("\\s+");
-		if(theParts[0].equals("remember"))	// "remember int a = 5"
+		if(theParts[0].equals(RememberStatement.identifier))	// "remember int a = 5"
 		{
-			int posOfEqualSign = s.indexOf('=');
-			String str = s.substring(posOfEqualSign+1).trim();
-			theListOfStatements.add(Parser.parseRemember(theParts[1], 
-					theParts[2], str));
+			theListOfStatements.add(Parser.parseRemember(s));
 		}
-		
+		else if (theParts[0].equals(QuestionStatement.qIdentifier))
+		{
+			String testExpression = "";
+			String trueStatement = "";
+			String falseStatement = "";
+			int partProcessing = 1; 
+			for(int i = 1; i < theParts.length; i++)
+			{
+				if (theParts[i].equals(QuestionStatement.firstIndentifier))
+				{
+					partProcessing = 2;
+				}
+				else if (theParts[i].equals(QuestionStatement.secondIndentifier))
+				{
+					partProcessing = 3;
+				}
+				else
+				{
+					switch (partProcessing)
+					{
+						case 1:
+							testExpression += " " + theParts[i];
+							break;
+						case 2:
+							trueStatement += " " + theParts[i];
+							break;
+						case 3:
+							falseStatement += " " + theParts[i];
+							break;
+					}
+				}				
+			}
+			theListOfStatements.add(Parser.parseQuestion(testExpression.trim(), trueStatement.trim(), falseStatement.trim()));
+		}
 	}
 	
 	static Expression parseExpression(String e)
@@ -139,6 +218,10 @@ public class Parser
 		{
 			//must be a do-math expression
 			return Parser.parseDoMath(e);
+		}
+		else if (theParts[0].equals(TestExpression.identifier))
+		{
+			return Parser.parseTest(e);
 		}
 		else if(Character.isDigit(theParts[0].charAt(0))) //does the value start with a number
 		{

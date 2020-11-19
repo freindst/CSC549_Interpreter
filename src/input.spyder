@@ -3,4 +3,5 @@ remember int b = 7;
 remember int c = do-math a + b; 
 remember int d = do-math 4 - 2;
 remember int e = do-math 10 % a;
-remember int f = do-math do-math a * do-math b - d + do-math c / d
+remember int f = do-math do-math a * do-math b - d + do-math c / d;
+question test a > b do remember int g = do-math a - b otherwise remember int g = do-math a + b;

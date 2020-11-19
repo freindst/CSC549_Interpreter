@@ -27,6 +27,10 @@ public class SpyderInterpreter
 			{
 				SpyderInterpreter.interpretRememberStatement((RememberStatement)s);
 			}
+			else if (s instanceof QuestionStatement)
+			{
+				SpyderInterpreter.interpretQuestionStatement((QuestionStatement)s);
+			}
 		}
 	}
 	
@@ -55,6 +59,28 @@ public class SpyderInterpreter
 		SpyderInterpreter.theOutput.add("<HIDDEN> Added " + rs.getName() + " = " + rs.getValue() + " to the variable environment.");
 	}
 	
+	private static void interpretQuestionStatement(QuestionStatement s)
+	{
+		TestExpression e = s.getTestExpression();
+		boolean condition = SpyderInterpreter.interpretTestExpression(e);
+		if (condition)
+		{
+			Statement resolve = s.getTrueStatement();
+			if (resolve instanceof RememberStatement)
+			{
+				interpretRememberStatement((RememberStatement)resolve);
+			}
+		}
+		else
+		{
+			Statement resolve = s.getFalseStatement();
+			if (resolve instanceof RememberStatement)
+			{
+				interpretRememberStatement((RememberStatement)resolve);
+			}
+		}
+	}
+	
 	private static int interpretDoMathExpression(DoMathExpression dme)
 	{
 		Expression left = dme.getLeft();
@@ -63,6 +89,16 @@ public class SpyderInterpreter
 		int rightValue = SpyderInterpreter.getExpressionValue(right);
 		String math_op = dme.getOp();
 		return DoMathExpression.math(leftValue, rightValue, math_op);
+	}
+	
+	private static boolean interpretTestExpression(TestExpression e)
+	{
+		Expression left = e.getLeft();
+		int leftValue = SpyderInterpreter.getExpressionValue(left);
+		Expression right = e.getRight();
+		int rightValue = SpyderInterpreter.getExpressionValue(right);
+		String operator = e.getOperator();
+		return TestExpression.test(leftValue, operator, rightValue);
 	}
 	
 	private static int interpretResolveExpression(ResolveExpression rs)
