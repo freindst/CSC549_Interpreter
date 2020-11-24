@@ -31,6 +31,10 @@ public class SpyderInterpreter
 			{
 				SpyderInterpreter.interpretQuestionStatement((QuestionStatement)s);
 			}
+			else if (s instanceof UpdateStatement)
+			{
+				SpyderInterpreter.interpretUpdateStatement((UpdateStatement)s);
+			}
 		}
 	}
 	
@@ -79,6 +83,14 @@ public class SpyderInterpreter
 				interpretRememberStatement((RememberStatement)resolve);
 			}
 		}
+	}
+	
+	private static void interpretUpdateStatement(UpdateStatement s)
+	{
+		Expression valueExpression = s.getValue();
+		int value = SpyderInterpreter.getExpressionValue(valueExpression);
+		SpyderInterpreter.theEnv.updateVariable(s.getName(), value);		
+		SpyderInterpreter.theOutput.add("<HIDDEN> Updated " + s.getName() + " = " + s.getValue() + " in the variable environment.");
 	}
 	
 	private static int interpretDoMathExpression(DoMathExpression dme)

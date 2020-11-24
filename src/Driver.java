@@ -9,7 +9,7 @@ public class Driver
 	public static void main(String[] args) 
 	{
 		Parser.parse("input.spyder");
-		Parser.display();
+		//Parser.display();
 		ArrayList<Statement> theStatements = Parser.getParsedStatements();
 		Interpreter.SpyderInterpreter.interpret(theStatements);
 		Interpreter.SpyderInterpreter.displayResults();

@@ -40,4 +40,25 @@ public class VariableEnvironment
 		//return -1;
 		throw new Exception("Variable Not Found");
 	}
+	
+	public void updateVariable(String name, int value)
+	{
+		boolean found = false;
+		int i = 0;
+		for(; i < this.theVariables.size(); i++)
+		{
+			if (this.theVariables.get(i).getName().equals(name)) {
+				found = true;
+				break;
+			}
+		}
+		if (found)
+		{
+			this.theVariables.get(i).setValue(value);			
+		} 
+		else
+		{
+			throw new RuntimeException("Variable Not Found");
+		}
+	}
 }

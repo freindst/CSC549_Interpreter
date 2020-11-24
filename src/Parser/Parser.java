@@ -45,6 +45,15 @@ public class Parser
 		return new QuestionStatement(Parser.parseTest(testExpression), a1, a2);
 	}
 	
+	static UpdateStatement parseUpdate(String s) 
+	{
+		int equalPos = s.indexOf('=');
+		String name = s.substring(UpdateStatement.identifier.length(), equalPos).trim();
+		String value = s.substring(equalPos + 1).trim();
+		Expression valueExpression = Parser.parseExpression(value);
+		return new UpdateStatement(name, valueExpression);
+	}
+	
 	static LiteralExpression parseLiteral(String value)
 	{
 		//We ONLY have a single LiteralType - int literal
@@ -169,7 +178,6 @@ public class Parser
 	
 	static void parseStatement(String s)
 	{
-		System.out.println(s);
 		String[] theParts = s.split("\\s+");
 		if(theParts[0].equals(RememberStatement.identifier))	// "remember int a = 5"
 		{
@@ -208,6 +216,10 @@ public class Parser
 				}				
 			}
 			theListOfStatements.add(Parser.parseQuestion(testExpression.trim(), trueStatement.trim(), falseStatement.trim()));
+		}
+		else if (theParts[0].equals(UpdateStatement.identifier))
+		{
+			theListOfStatements.add(Parser.parseUpdate(s));
 		}
 	}
 	
