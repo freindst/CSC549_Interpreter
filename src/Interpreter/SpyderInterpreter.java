@@ -35,6 +35,10 @@ public class SpyderInterpreter
 			{
 				SpyderInterpreter.interpretUpdateStatement((UpdateStatement)s);
 			}
+			else if (s instanceof WhileStatement)
+			{
+				SpyderInterpreter.interpretWhileStatement((WhileStatement)s);
+			}
 		}
 	}
 	
@@ -92,6 +96,18 @@ public class SpyderInterpreter
 		SpyderInterpreter.theEnv.updateVariable(s.getName(), value);		
 		SpyderInterpreter.theOutput.add("<HIDDEN> Updated " + s.getName() + " = " + s.getValue() + " in the variable environment.");
 	}
+	
+	private static void interpretWhileStatement(WhileStatement s)
+	{
+		TestExpression e = s.getTestExpression();
+		boolean condition = SpyderInterpreter.interpretTestExpression(e);
+		if (condition)
+		{
+			SpyderInterpreter.interpret(s.getLoopStatement());
+			SpyderInterpreter.interpretWhileStatement(s);
+		}
+	}
+	
 	
 	private static int interpretDoMathExpression(DoMathExpression dme)
 	{

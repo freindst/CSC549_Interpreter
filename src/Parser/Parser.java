@@ -54,6 +54,19 @@ public class Parser
 		return new UpdateStatement(name, valueExpression);
 	}
 	
+	static WhileStatement parseWhile(String s)
+	{
+		int posOfDo = s.indexOf(WhileStatement.secKeyword);
+		String testExpression = s.substring(WhileStatement.identifier.length(), posOfDo).trim();
+		ArrayList<Statement> statements = new ArrayList<Statement>();		
+		String[] strs = s.substring(posOfDo + WhileStatement.secKeyword.length()).trim().split(";");
+		for(String str: strs)
+		{
+			statements.add(parseStatement(str));
+		}
+		return new WhileStatement(Parser.parseTest(testExpression), statements);
+	}
+	
 	static LiteralExpression parseLiteral(String value)
 	{
 		//We ONLY have a single LiteralType - int literal
@@ -166,7 +179,7 @@ public class Parser
 			String[] theProgramLines = fileContents.split(";");
 			for(int i = 0; i < theProgramLines.length; i++)
 			{
-				parseStatement(theProgramLines[i]);
+				theListOfStatements.add(parseStatement(theProgramLines[i]));
 			}
 		}
 		catch(Exception e)
@@ -176,12 +189,12 @@ public class Parser
 		}
 	}
 	
-	static void parseStatement(String s)
+	static Statement parseStatement(String s)
 	{
 		String[] theParts = s.split("\\s+");
 		if(theParts[0].equals(RememberStatement.identifier))	// "remember int a = 5"
 		{
-			theListOfStatements.add(Parser.parseRemember(s));
+			return Parser.parseRemember(s);
 		}
 		else if (theParts[0].equals(QuestionStatement.qIdentifier))
 		{
@@ -215,11 +228,19 @@ public class Parser
 					}
 				}				
 			}
-			theListOfStatements.add(Parser.parseQuestion(testExpression.trim(), trueStatement.trim(), falseStatement.trim()));
+			return Parser.parseQuestion(testExpression.trim(), trueStatement.trim(), falseStatement.trim());
 		}
 		else if (theParts[0].equals(UpdateStatement.identifier))
 		{
-			theListOfStatements.add(Parser.parseUpdate(s));
+			return Parser.parseUpdate(s);
+		}
+		else if (theParts[0].equals(WhileStatement.identifier))
+		{
+			return Parser.parseWhile(s);
+		} 
+		else
+		{
+			return null;
 		}
 	}
 	

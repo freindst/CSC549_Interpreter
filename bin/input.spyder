@@ -1,3 +1,4 @@
 remember int a = 5;
 update a = 9;
-question test a == 5 do remember int c = 1 otherwise remember int c = 2
+while test a < 15 do update a = do-math a + 1;
+question test a == 15 do remember int c = 1 otherwise remember int c = 2;
