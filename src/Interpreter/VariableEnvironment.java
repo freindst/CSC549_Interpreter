@@ -43,22 +43,13 @@ public class VariableEnvironment
 	
 	public void updateVariable(String name, int value)
 	{
-		boolean found = false;
-		int i = 0;
-		for(; i < this.theVariables.size(); i++)
+		for(NameValuePair nvp: this.theVariables)
 		{
-			if (this.theVariables.get(i).getName().equals(name)) {
-				found = true;
-				break;
+			if (nvp.getName().equals(name))
+			{
+				nvp.setValue(value);
+				return;
 			}
-		}
-		if (found)
-		{
-			this.theVariables.get(i).setValue(value);			
-		} 
-		else
-		{
-			throw new RuntimeException("Variable Not Found");
 		}
 	}
 }

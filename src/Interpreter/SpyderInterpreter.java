@@ -23,22 +23,35 @@ public class SpyderInterpreter
 	{
 		for(Statement s: theStatements)
 		{
-			if(s instanceof RememberStatement)
-			{
-				SpyderInterpreter.interpretRememberStatement((RememberStatement)s);
-			}
-			else if (s instanceof QuestionStatement)
-			{
-				SpyderInterpreter.interpretQuestionStatement((QuestionStatement)s);
-			}
-			else if (s instanceof UpdateStatement)
-			{
-				SpyderInterpreter.interpretUpdateStatement((UpdateStatement)s);
-			}
-			else if (s instanceof WhileStatement)
-			{
-				SpyderInterpreter.interpretWhileStatement((WhileStatement)s);
-			}
+			interpretStatement(s);
+		}
+	}
+	
+	public static void interpretStatement(Statement s)
+	{
+		if(s instanceof RememberStatement)
+		{
+			SpyderInterpreter.interpretRememberStatement((RememberStatement)s);
+		}
+		else if (s instanceof QuestionStatement)
+		{
+			SpyderInterpreter.interpretQuestionStatement((QuestionStatement)s);
+		}
+		else if (s instanceof UpdateStatement)
+		{
+			SpyderInterpreter.interpretUpdateStatement((UpdateStatement)s);
+		}
+		else if (s instanceof WhileStatement)
+		{
+			SpyderInterpreter.interpretWhileStatement((WhileStatement)s);
+		}
+		else if (s instanceof PrintStatement)
+		{
+			SpyderInterpreter.interpretPrintStatement((PrintStatement)s);
+		}
+		else if (s instanceof BlockStatement)
+		{
+			SpyderInterpreter.interpretBlockStatement((BlockStatement)s);
 		}
 	}
 	
@@ -99,15 +112,27 @@ public class SpyderInterpreter
 	
 	private static void interpretWhileStatement(WhileStatement s)
 	{
+		SpyderInterpreter.theOutput.add("<HIDDEN> Execute while loop statement");
 		TestExpression e = s.getTestExpression();
-		boolean condition = SpyderInterpreter.interpretTestExpression(e);
-		if (condition)
+		while(SpyderInterpreter.interpretTestExpression(e))
 		{
-			SpyderInterpreter.interpret(s.getLoopStatement());
-			SpyderInterpreter.interpretWhileStatement(s);
+			SpyderInterpreter.interpretStatement(s.getStatement());
 		}
 	}
 	
+	private static void interpretPrintStatement(PrintStatement s)
+	{
+		Expression valueExpression = s.getValueExpression();
+		int value = SpyderInterpreter.getExpressionValue(valueExpression);
+		SpyderInterpreter.theOutput.add("<HIDDEN> Print " + valueExpression.toString());
+		SpyderInterpreter.theOutput.add("" + value);
+	}
+	
+	private static void interpretBlockStatement(BlockStatement s)
+	{
+		ArrayList<Statement> statements = s.getStatements();
+		SpyderInterpreter.interpret(statements);
+	}
 	
 	private static int interpretDoMathExpression(DoMathExpression dme)
 	{

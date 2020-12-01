@@ -1,7 +1,5 @@
 package Parser;
 
-import java.util.ArrayList;
-
 public class WhileStatement extends Statement 
 {
 	public static String identifier = "while";
@@ -10,32 +8,26 @@ public class WhileStatement extends Statement
 	
 	public TestExpression testExpression;
 	
-	public ArrayList<Statement> loopStatement;
+	public Statement statement;
 	
-	public WhileStatement(TestExpression testExpression,
-			ArrayList<Statement> loopStatement) {
+	public WhileStatement(TestExpression testExpression, Statement statement) {
 		super("While Statement");
 		this.testExpression = testExpression;
-		this.loopStatement = loopStatement;
+		this.statement = statement;
 	}
 	
 	public String toString()
 	{
-		String statements = "";
-		for(Statement s: this.loopStatement)
-		{
-			statements += s.toString() + "\n\t\t";
-		}
 		return super.toString() + "\n\t" +
 	"until " + this.testExpression.toString() + "\n\t\t" +
-				statements;
+				this.statementType.toString();
 	}
 
 	public TestExpression getTestExpression() {
 		return testExpression;
 	}
 
-	public ArrayList<Statement> getLoopStatement() {
-		return loopStatement;
+	public Statement getStatement() {
+		return statement;
 	}
 }

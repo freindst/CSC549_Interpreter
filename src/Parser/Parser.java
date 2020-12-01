@@ -57,14 +57,25 @@ public class Parser
 	static WhileStatement parseWhile(String s)
 	{
 		int posOfDo = s.indexOf(WhileStatement.secKeyword);
-		String testExpression = s.substring(WhileStatement.identifier.length(), posOfDo).trim();
-		ArrayList<Statement> statements = new ArrayList<Statement>();		
-		String[] strs = s.substring(posOfDo + WhileStatement.secKeyword.length()).trim().split(";");
-		for(String str: strs)
+		String testExpression = s.substring(WhileStatement.identifier.length(), posOfDo).trim();		
+		String statementStr = s.substring(posOfDo + WhileStatement.secKeyword.length()).trim();
+		return new WhileStatement(Parser.parseTest(testExpression), Parser.parseStatement(statementStr));
+	}
+	
+	static PrintStatement parsePrint(String s)
+	{
+		return new PrintStatement(Parser.parseExpression(s.trim()));
+	}
+	
+	static BlockStatement parseBlock(String s)
+	{
+		String[] blocks = s.split(BlockStatement.separator);
+		ArrayList<Statement> statements = new ArrayList<Statement>();
+		for(String str: blocks)
 		{
-			statements.add(parseStatement(str));
+			statements.add(Parser.parseStatement(str.trim()));
 		}
-		return new WhileStatement(Parser.parseTest(testExpression), statements);
+		return new BlockStatement(statements);
 	}
 	
 	static LiteralExpression parseLiteral(String value)
@@ -237,7 +248,17 @@ public class Parser
 		else if (theParts[0].equals(WhileStatement.identifier))
 		{
 			return Parser.parseWhile(s);
-		} 
+		}
+		else if (theParts[0].equals(PrintStatement.identifer))
+		{
+			return Parser.parsePrint(s.substring(PrintStatement.identifer.length()));
+		}
+		else if (theParts[0].equals(BlockStatement.startIdentifier))
+		{
+			int endIndex = s.indexOf(BlockStatement.endIdentifier);
+			endIndex = endIndex > -1 ? endIndex : s.length();
+			return Parser.parseBlock(s.substring(BlockStatement.startIdentifier.length(), endIndex).trim());
+		}
 		else
 		{
 			return null;
