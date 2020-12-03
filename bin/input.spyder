@@ -1,5 +1,4 @@
 remember int a = 5;
-update a = 9;
-while test a < 15 do update a = do-math a + 1;
-question test a == 15 do remember int c = 1 otherwise remember int c = 2;
-while test a > 0 do begin print a, update a = do-math a - 1 end;
+remember int b = 5;
+remember int c = 0;
+while test a > 0 do begin print a, update b = 5, while test b > 0 do begin print b, update c = do-math c + 1, update b = do-math b - 1 end, update a = do-math a - 1 end;

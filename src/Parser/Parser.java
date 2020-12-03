@@ -3,6 +3,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.lang.model.util.ElementScanner6;
+
 public class Parser 
 {
 	private static ArrayList<Statement> theListOfStatements = new ArrayList<Statement>();
@@ -67,14 +69,8 @@ public class Parser
 		return new PrintStatement(Parser.parseExpression(s.trim()));
 	}
 	
-	static BlockStatement parseBlock(String s)
+	static BlockStatement parseBlock(ArrayList<Statement> statements)
 	{
-		String[] blocks = s.split(BlockStatement.separator);
-		ArrayList<Statement> statements = new ArrayList<Statement>();
-		for(String str: blocks)
-		{
-			statements.add(Parser.parseStatement(str.trim()));
-		}
 		return new BlockStatement(statements);
 	}
 	
@@ -255,9 +251,8 @@ public class Parser
 		}
 		else if (theParts[0].equals(BlockStatement.startIdentifier))
 		{
-			int endIndex = s.indexOf(BlockStatement.endIdentifier);
-			endIndex = endIndex > -1 ? endIndex : s.length();
-			return Parser.parseBlock(s.substring(BlockStatement.startIdentifier.length(), endIndex).trim());
+			ArrayList<Statement> statements = Parser.splitStatement(s);
+			return Parser.parseBlock(statements);
 		}
 		else
 		{
@@ -287,5 +282,56 @@ public class Parser
 			//must be a var name
 			return Parser.parseResolve(e);
 		}
+	}
+
+	static ArrayList<Statement> splitStatement(String s)
+	{
+		String input = "";
+		if (s.startsWith(BlockStatement.startIdentifier) && s.endsWith(BlockStatement.endIdentifier))
+		{
+			input = s.substring(BlockStatement.startIdentifier.length(), s.length() - BlockStatement.endIdentifier.length()).trim();
+		}
+		ArrayList<Statement> result = new ArrayList<Statement>();
+		int numberOfBegin = 0;
+		String[] theParts = input.split("\\s+");
+		String currTemp = "";
+		for(String str : theParts)
+		{
+			if(str.endsWith(BlockStatement.separator))
+			{
+				String temp = str.substring(0, str.length() - 1);
+				if (temp.equals(BlockStatement.endIdentifier))
+				{
+					numberOfBegin--;
+				}
+				currTemp = currTemp + " " + temp;
+				if (numberOfBegin == 0 && currTemp.length() > 0)
+				{
+					result.add(Parser.parseStatement(currTemp.trim()));
+					currTemp = "";
+				}
+				else
+				{
+					currTemp = currTemp + ",";
+				}
+			}
+			else
+			{
+				if (str.equals(BlockStatement.startIdentifier))
+				{
+					numberOfBegin++;
+				}
+				else if (str.equals(BlockStatement.endIdentifier))
+				{
+					numberOfBegin--;
+				}
+				currTemp = currTemp + " " + str;
+			}
+		}
+		if (currTemp.length() > 0)
+		{
+			result.add(Parser.parseStatement(currTemp.trim()));
+		}
+		return result;
 	}
 }
