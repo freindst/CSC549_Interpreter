@@ -1,10 +1,16 @@
 package Parser;
 
 public abstract class PartTree {
-	protected PartTree root;
 	
-	public PartTree(PartTree root)
+	private String nodeType;
+	
+	public PartTree(String nodeType)
 	{
-		this.root = root;
+		this.nodeType = nodeType;
+	}
+	
+	public String toString()
+	{
+		return this.nodeType;
 	}
 }

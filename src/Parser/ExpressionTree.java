@@ -1,27 +1,8 @@
 package Parser;
 
-public class ExpressionTree extends ExpressionPart {
-	public ExpressionPart leftPart;
-	public SymbolTree symbolPart;
-	public ExpressionPart rightPart;
+public abstract class ExpressionTree extends ExpressionPart {
 	
-	public ExpressionTree(PartTree root, ExpressionPart leftPart, SymbolTree symbolPart, ExpressionPart rightPart) {
-		super(root);
-		this.leftPart = leftPart;
-		this.symbolPart = symbolPart;
-		this.rightPart = rightPart;
+	public ExpressionTree(String nodeType) {
+		super(nodeType);
 	}
-
-	public ExpressionPart getLeftPart() {
-		return leftPart;
-	}
-
-	public SymbolTree getSymbolPart() {
-		return symbolPart;
-	}
-
-	public ExpressionPart getRightPart() {
-		return rightPart;
-	}
-	
 }

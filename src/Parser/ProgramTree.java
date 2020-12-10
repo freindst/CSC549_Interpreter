@@ -3,15 +3,25 @@ package Parser;
 import java.util.ArrayList;
 
 public class ProgramTree {
-	ArrayList<StatementTree> statementParts;
+	private ArrayList<StatementTree> statementParts;
 	
-	public ProgramTree(ArrayList<StatementTree> statementParts)
+	public ProgramTree()
 	{
-		this.statementParts = statementParts;
+		this.statementParts = new ArrayList<StatementTree>();
 	}
 	
 	public ArrayList<StatementTree> getStatementParts()
 	{
 		return this.statementParts;
+	}
+	
+	public String toString()
+	{
+		String result = "Program Tree";
+		for(StatementTree st : this.statementParts)
+		{
+			result = result + "\r\n\t" + st.toString();
+		}
+		return result;
 	}
 }

@@ -1,17 +1,14 @@
 package Parser;
 
-import java.util.ArrayList;
-
-public class StatementTree extends StatementPart {
-	public ArrayList<PartTree> childen;
+public abstract class StatementTree extends StatementPart {
 	
-	public StatementTree(PartTree root, ArrayList<PartTree> childen) {
-		super(root);
-		this.childen = childen;
+	public StatementTree(String nodeType) 
+	{
+		super(nodeType);
 	}
 
-	public ArrayList<PartTree> getChildren() {
-		return this.childen;
+	public String toString() 
+	{
+		return super.toString();
 	}
-	
 }
